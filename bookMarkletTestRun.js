@@ -1,4 +1,4 @@
-GroupingCriteria = function(ruleList){
+GroupingCriteria = function (ruleList){
     
     this.rules = Array.from(ruleList).filter((element) => element.type == 1);
     this.weight = 1;
@@ -11,7 +11,7 @@ GroupingCriteria = function(ruleList){
     }
 };
 
-RareSelectorsCriteria = function(ruleList){
+RareSelectorsCriteria = function (ruleList){
     
     this.pattern = /(\[{1}.*=.*\]{1})|(>|~|\+)/g;
     this.rules = Array.from(ruleList).filter((element) => element.type == 1);
@@ -30,6 +30,46 @@ RareSelectorsCriteria = function(ruleList){
         }
         return count*weight
     }
+};
+
+SimplifiedPropertiesCriteria = function (ruleList){
+    
+};
+
+SelectorSizeCriteria = function (ruleList){
+    
+};
+
+PseudoElementsCriteria = function (ruleList) {
+    // body...
+};
+
+AtRulesCriteria = function (ruleList) {
+    // body...
+};
+
+MediaQueriesCriteria = function (ruleList) {
+    // body...
+};
+
+PrefixCriteria = function (ruleList) {
+    // body...
+};
+
+NotSufixCriteria = function (ruleList) {
+    // body...
+};
+
+SelectorComplexityCriteria = function (ruleList) {
+    // body...
+};
+
+LocationSelectorCriteria = function (ruleList) {
+    
+};
+
+StyleSheetLengthCriteria = function (ruleList) {
+    // body...
 };
 
 var Result = function(cssRule, score){
