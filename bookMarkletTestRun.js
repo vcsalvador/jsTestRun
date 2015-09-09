@@ -18,9 +18,9 @@ RareSelectorsCriteria = function(ruleList){
     this.weight = 3;
     
     this.resultList = this.rules.map((currentValue) => 
-        new Result(currentValue, calculateRule(currentValue, this.weight)));
+        new Result(currentValue, calculateRule(currentValue, this.weight, this.pattern)));
     
-    function calculateRule(rule, weight){
+    function calculateRule(rule, weight, pattern){
         var count = 0;
         while ((m = pattern.exec(rule.selectorText)) !== null) {
             if (m.index === pattern.lastIndex) {
@@ -33,8 +33,8 @@ RareSelectorsCriteria = function(ruleList){
 };
 
 var Result = function(cssRule, score){
-    this.cssRule;
-    this.score;
+    this.cssRule = cssRule;
+    this.score = score;
     this.htmlMatches = () => this.cssRule.selectorText;
 };
 
@@ -42,15 +42,13 @@ var myStyleSheet = function(styleSheet){
     this.styleSheet = styleSheet;
     this.criteriaList = [];
     this.criteriaList.push(styleSheet.cssRules ? new GroupingCriteria(styleSheet.cssRules):null);
-    this.cirteriaList.push(styleSheet.cssRules ? new RareSelectorsCriteria(styleSheet.cssRules):null);
+    this.criteriaList.push(styleSheet.cssRules ? new RareSelectorsCriteria(styleSheet.cssRules):null);
 };
 
 () => {
     var arr = Array.from(document.styleSheets);
 
-    var myStyleSheetList = arr.map(function(currentValue){
-        return new myStyleSheet(currentValue);
-    });
+    var myStyleSheetList = arr.map((currentValue) => new myStyleSheet(currentValue));
 
     console.log(myStyleSheetList);
 }();
