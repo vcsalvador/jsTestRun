@@ -33,19 +33,78 @@ RareSelectorsCriteria = function (ruleList){
 };
 
 SimplifiedPropertiesCriteria = function (ruleList){
+    this.pattern = //g;
+    this.rules = Array.from(ruleList).filter((element) => element.type == 1);
+    this.weight = 3;
     
+    this.resultList = this.rules.map((currentValue) => 
+        new Result(currentValue, calculateRule(currentValue, this.weight, this.pattern)));
+    
+    function calculateRule(rule, weight, pattern){
+        var count = 0;
+        while ((m = pattern.exec(rule.cssText)) !== null) {
+            if (m.index === pattern.lastIndex) {
+                count++;
+                pattern.lastIndex++;
+            }
+        }
+        return count*weight
+    }
 };
 
 SelectorSizeCriteria = function (ruleList){
+    this.rules = Array.from(ruleList).filter((element) => element.type == 1);
+    this.weight = 3;
     
+    this.resultList = this.rules.map((currentValue) => 
+        new Result(currentValue, calculateRule(currentValue, this.weight)));
+    
+    function calculateRule(rule, weight) {
+        if (rule.selectorText.length > 30)
+            return (rule.selectorText.length - 30) * weight;
+        else 
+            return 0;
+    }
 };
 
 PseudoElementsCriteria = function (ruleList) {
-    // body...
+    this.rules = Array.from(ruleList).filter((element) => element.type == 1);
+    this.weight = 1;
+    this.pattern = /(?!:not)(:\w+)/g;
+    
+    this.resultList = this.rules.map((currentValue) => 
+        new Result(currentValue, calculateRule(currentValue, this.weight, this.pattern)));
+    
+    function calculateRule(rule, weight, pattern){
+        var count = 0;
+        while ((m = pattern.exec(rule.selectorText)) !== null) {
+            if (m.index === pattern.lastIndex) {
+                count++;
+                pattern.lastIndex++;
+            }
+        }
+        return count*weight
+    }
 };
 
 AtRulesCriteria = function (ruleList) {
-    // body...
+    this.rules = Array.from(ruleList).filter((element) => element.type == 1);
+    this.weight = 1;
+    this.pattern = /(?!@media)(@\w+)/g;
+    
+    this.resultList = this.rules.map((currentValue) => 
+        new Result(currentValue, calculateRule(currentValue, this.weight, this.pattern)));
+    
+    function calculateRule(rule, weight, pattern){
+        var count = 0;
+        while ((m = pattern.exec(rule.selectorText)) !== null) {
+            if (m.index === pattern.lastIndex) {
+                count++;
+                pattern.lastIndex++;
+            }
+        }
+        return count*weight
+    }
 };
 
 MediaQueriesCriteria = function (ruleList) {
@@ -53,11 +112,43 @@ MediaQueriesCriteria = function (ruleList) {
 };
 
 PrefixCriteria = function (ruleList) {
-    // body...
+    this.rules = Array.from(ruleList).filter((element) => element.type == 1);
+    this.weight = 1;
+    this.pattern = /(-webkit-)|(-moz-)|(-ms-)|(-o-)/g;
+    
+    this.resultList = this.rules.map((currentValue) => 
+        new Result(currentValue, calculateRule(currentValue, this.weight, this.pattern)));
+    
+    function calculateRule(rule, weight, pattern){
+        var count = 0;
+        while ((m = pattern.exec(rule.selectorText)) !== null) {
+            if (m.index === pattern.lastIndex) {
+                count++;
+                pattern.lastIndex++;
+            }
+        }
+        return count*weight
+    }
 };
 
 NotSufixCriteria = function (ruleList) {
-    // body...
+    this.rules = Array.from(ruleList).filter((element) => element.type == 1);
+    this.weight = 1;
+    this.pattern = /(:not)/g;
+    
+    this.resultList = this.rules.map((currentValue) => 
+        new Result(currentValue, calculateRule(currentValue, this.weight, this.pattern)));
+    
+    function calculateRule(rule, weight, pattern){
+        var count = 0;
+        while ((m = pattern.exec(rule.selectorText)) !== null) {
+            if (m.index === pattern.lastIndex) {
+                count++;
+                pattern.lastIndex++;
+            }
+        }
+        return count*weight
+    }
 };
 
 SelectorComplexityCriteria = function (ruleList) {
