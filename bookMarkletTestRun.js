@@ -21,19 +21,15 @@ RareSelectorsCriteria = function (ruleList){
         new Result(currentValue, calculateRule(currentValue, this.weight, this.pattern)));
     
     function calculateRule(rule, weight, pattern){
-        var count = 0;
-        while ((m = pattern.exec(rule.selectorText)) !== null) {
-            if (m.index === pattern.lastIndex) {
-                count++;
-                pattern.lastIndex++;
-            }
-        }
-        return count*weight
+        if ((m = pattern.exec(rule.selectorText)) !== null)
+            return m.length * weight;
+        else
+            return 0;
     }
 };
 
 SimplifiedPropertiesCriteria = function (ruleList){
-    this.pattern = //g;
+    this.pattern = /(\w*:){1}(\w*,)+(;)/g;
     this.rules = Array.from(ruleList).filter((element) => element.type == 1);
     this.weight = 3;
     
@@ -41,14 +37,10 @@ SimplifiedPropertiesCriteria = function (ruleList){
         new Result(currentValue, calculateRule(currentValue, this.weight, this.pattern)));
     
     function calculateRule(rule, weight, pattern){
-        var count = 0;
-        while ((m = pattern.exec(rule.cssText)) !== null) {
-            if (m.index === pattern.lastIndex) {
-                count++;
-                pattern.lastIndex++;
-            }
-        }
-        return count*weight
+        if ((m = pattern.exec(rule.selectorText)) !== null)
+            return m.length * weight;
+        else
+            return 0;
     }
 };
 
@@ -76,14 +68,10 @@ PseudoElementsCriteria = function (ruleList) {
         new Result(currentValue, calculateRule(currentValue, this.weight, this.pattern)));
     
     function calculateRule(rule, weight, pattern){
-        var count = 0;
-        while ((m = pattern.exec(rule.selectorText)) !== null) {
-            if (m.index === pattern.lastIndex) {
-                count++;
-                pattern.lastIndex++;
-            }
-        }
-        return count*weight
+        if ((m = pattern.exec(rule.selectorText)) !== null)
+            return m.length * weight;
+        else
+            return 0;
     }
 };
 
@@ -96,14 +84,10 @@ AtRulesCriteria = function (ruleList) {
         new Result(currentValue, calculateRule(currentValue, this.weight, this.pattern)));
     
     function calculateRule(rule, weight, pattern){
-        var count = 0;
-        while ((m = pattern.exec(rule.selectorText)) !== null) {
-            if (m.index === pattern.lastIndex) {
-                count++;
-                pattern.lastIndex++;
-            }
-        }
-        return count*weight
+        if ((m = pattern.exec(rule.selectorText)) !== null)
+            return m.length * weight;
+        else
+            return 0;
     }
 };
 
@@ -120,14 +104,10 @@ PrefixCriteria = function (ruleList) {
         new Result(currentValue, calculateRule(currentValue, this.weight, this.pattern)));
     
     function calculateRule(rule, weight, pattern){
-        var count = 0;
-        while ((m = pattern.exec(rule.selectorText)) !== null) {
-            if (m.index === pattern.lastIndex) {
-                count++;
-                pattern.lastIndex++;
-            }
-        }
-        return count*weight
+        if ((m = pattern.exec(rule.selectorText)) !== null)
+            return m.length * weight;
+        else
+            return 0;
     }
 };
 
@@ -140,14 +120,10 @@ NotSufixCriteria = function (ruleList) {
         new Result(currentValue, calculateRule(currentValue, this.weight, this.pattern)));
     
     function calculateRule(rule, weight, pattern){
-        var count = 0;
-        while ((m = pattern.exec(rule.selectorText)) !== null) {
-            if (m.index === pattern.lastIndex) {
-                count++;
-                pattern.lastIndex++;
-            }
-        }
-        return count*weight
+        if ((m = pattern.exec(rule.selectorText)) !== null)
+            return m.length * weight;
+        else
+            return 0;
     }
 };
 
