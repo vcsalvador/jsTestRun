@@ -99,16 +99,12 @@ MediaQueriesCriteria = function (ruleList) {
   this.resultList = this.rules.map((currentValue) =>
       new Result(currentValue, calculateRule(currentValue, this.weight, this.pattern)));
 
-  function calculateRule(rule, weight, pattern){
-      var count = 0;
-      while ((m = pattern.exec(rule.selectorText)) !== null) {
-          if (m.index === pattern.lastIndex) {
-              count++;
-              pattern.lastIndex++;
-          }
-      }
-      return count*weight
-  }
+    function calculateRule(rule, weight, pattern){
+        if ((m = pattern.exec(rule.selectorText)) !== null)
+            return m.length * weight;
+        else
+            return 0;
+    }
 };
 
 PrefixCriteria = function (ruleList) {
