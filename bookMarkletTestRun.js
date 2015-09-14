@@ -9,6 +9,9 @@ GroupingCriteria = function (ruleList){
     function calculateRule(rule, weight){
         return (rule.selectorText.split(',').length - 1) * weight;
     }
+    
+    this.total = this.resultList.reduce((previousValue,currentValue) => {
+        return previousValue + currentValue.score}, 0);
 };
 
 RareSelectorsCriteria = function (ruleList){
@@ -26,6 +29,9 @@ RareSelectorsCriteria = function (ruleList){
         else
             return 0;
     }
+    
+    this.total = this.resultList.reduce((previousValue,currentValue) => {
+        return previousValue + currentValue.score}, 0);
 };
 
 SimplifiedPropertiesCriteria = function (ruleList){
@@ -42,6 +48,9 @@ SimplifiedPropertiesCriteria = function (ruleList){
         else
             return 0;
     }
+    
+    this.total = this.resultList.reduce((previousValue,currentValue) => {
+        return previousValue + currentValue.score}, 0);
 };
 
 SelectorSizeCriteria = function (ruleList){
@@ -57,12 +66,15 @@ SelectorSizeCriteria = function (ruleList){
         else
             return 0;
     }
+    
+    this.total = this.resultList.reduce((previousValue,currentValue) => {
+        return previousValue + currentValue.score}, 0);
 };
 
 PseudoElementsCriteria = function (ruleList) {
     this.rules = Array.from(ruleList).filter((element) => element.type == 1);
     this.weight = 2.8;
-    this.pattern = /(?!:not)(:\w+)/g;
+    this.pattern = /(?!:not)(?!:.*-child)(:\w+)/g;
 
     this.resultList = this.rules.map((currentValue) =>
         new Result(currentValue, calculateRule(currentValue, this.weight, this.pattern)));
@@ -73,10 +85,13 @@ PseudoElementsCriteria = function (ruleList) {
         else
             return 0;
     }
+    
+    this.total = this.resultList.reduce((previousValue,currentValue) => {
+        return previousValue + currentValue.score}, 0);
 };
 
 AtRulesCriteria = function (ruleList) {
-    this.rules = Array.from(ruleList).filter((element) => element.type == 1);
+    this.rules = Array.from(ruleList).filter((element) => ''.contains.call([3,5,6,7,8,10,12,13], element.type));
     this.weight = 2.8;
     this.pattern = /(?!@media)(@\w+)/g;
 
@@ -89,10 +104,13 @@ AtRulesCriteria = function (ruleList) {
         else
             return 0;
     }
+    
+    this.total = this.resultList.reduce((previousValue,currentValue) => {
+        return previousValue + currentValue.score}, 0);
 };
 
 MediaQueriesCriteria = function (ruleList) {
-  this.rules = Array.from(ruleList).filter((element) => element.type == 1);
+  this.rules = Array.from(ruleList).filter((element) => element.type == 4);
   this.weight = 3.8;
   this.pattern = /(@media)/g;
 
@@ -105,6 +123,9 @@ MediaQueriesCriteria = function (ruleList) {
         else
             return 0;
     }
+    
+    this.total = this.resultList.reduce((previousValue,currentValue) => {
+        return previousValue + currentValue.score}, 0);
 };
 
 PrefixCriteria = function (ruleList) {
@@ -121,6 +142,9 @@ PrefixCriteria = function (ruleList) {
         else
             return 0;
     }
+    
+    this.total = this.resultList.reduce((previousValue,currentValue) => {
+        return previousValue + currentValue.score}, 0);
 };
 
 NotSufixCriteria = function (ruleList) {
@@ -137,6 +161,9 @@ NotSufixCriteria = function (ruleList) {
         else
             return 0;
     }
+    
+    this.total = this.resultList.reduce((previousValue,currentValue) => {
+        return previousValue + currentValue.score}, 0);
 };
 
 SelectorComplexityCriteria = function (ruleList) {
@@ -144,7 +171,22 @@ SelectorComplexityCriteria = function (ruleList) {
 };
 
 LocationSelectorCriteria = function (ruleList) {
+    this.rules = Array.from(ruleList).filter((element) => element.type == 1);
+    this.weight = 2.8;
+    this.pattern = /(?!:not)(?!:.*-child)(:\w+)/g;
 
+    this.resultList = this.rules.map((currentValue) =>
+        new Result(currentValue, calculateRule(currentValue, this.weight, this.pattern)));
+
+    function calculateRule(rule, weight, pattern){
+        if ((m = pattern.exec(rule.selectorText)) !== null)
+            return m.length * weight;
+        else
+            return 0;
+    }
+    
+    this.total = this.resultList.reduce((previousValue,currentValue) => {
+        return previousValue + currentValue.score}, 0);
 };
 
 StyleSheetLengthCriteria = function (ruleList) {
@@ -162,6 +204,16 @@ var myStyleSheet = function(styleSheet){
     this.criteriaList = [];
     this.criteriaList.push(styleSheet.cssRules ? new GroupingCriteria(styleSheet.cssRules):null);
     this.criteriaList.push(styleSheet.cssRules ? new RareSelectorsCriteria(styleSheet.cssRules):null);
+    this.criteriaList.push(styleSheet.cssRules ? new SimplifiedPropertiesCriteria(styleSheet.cssRules):null);
+    this.criteriaList.push(styleSheet.cssRules ? new SelectorSizeCriteria(styleSheet.cssRules):null);
+    this.criteriaList.push(styleSheet.cssRules ? new PseudoElementsCriteria(styleSheet.cssRules):null);
+    this.criteriaList.push(styleSheet.cssRules ? new AtRulesCriteria(styleSheet.cssRules):null);
+    this.criteriaList.push(styleSheet.cssRules ? new MediaQueriesCriteria(styleSheet.cssRules):null);
+    this.criteriaList.push(styleSheet.cssRules ? new PrefixCriteria(styleSheet.cssRules):null);
+    this.criteriaList.push(styleSheet.cssRules ? new NotSufixCriteria(styleSheet.cssRules):null);
+    
+    this.finalScore = this.criteriaList.reduce((previousValue,currentValue) => {
+        return previousValue + (currentValue ? currentValue.total: 0)}, 0);
 };
 
 () => {
