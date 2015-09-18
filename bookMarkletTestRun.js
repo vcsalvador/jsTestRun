@@ -14,15 +14,19 @@ var GroupingCriteria = function (ruleList){
 };
 
 
-var NestingCriteria = function (argument) {
+var NestingCriteria = function (ruleList) {
     this.rules = Array.from(ruleList).filter((element) => element.type == 1);
     this.weight = 2.8;
+    this.pattern = /(?!,)( )/g;
 
     this.resultList = this.rules.map((currentValue) =>
-        new Result(currentValue, calculateRule(currentValue, this.weight)));
-
-    function calculateRule(rule, weight){
-        return weight * (2/(1 + Math.pow(Math.E,(-(rule.selectorText.split(',').length - 1)))) - 1);
+        new Result(currentValue, calculateRule(currentValue, this.weight, this.pattern)));
+    
+    function calculateRule(rule, weight, pattern){
+        if ((m = pattern.exec(rule.selectorText)) !== null)
+            return weight * (2/(1 + Math.pow(Math.E,(-(rule.selectorText.split('').length - 1)))) - 1);
+        else
+            return 0;
     }
     
     this.total = this.resultList.reduce((previousValue,currentValue) => {
@@ -219,6 +223,7 @@ var myStyleSheet = function(styleSheet){
     this.styleSheet = styleSheet;
     this.criteriaList = [];
     this.criteriaList.push(styleSheet.cssRules ? new GroupingCriteria(styleSheet.cssRules):null);
+    this.criteriaList.push(styleSheet.cssRules ? new NestingCriteria(styleSheet.cssRules):null);
     this.criteriaList.push(styleSheet.cssRules ? new RareSelectorsCriteria(styleSheet.cssRules):null);
     this.criteriaList.push(styleSheet.cssRules ? new SimplifiedPropertiesCriteria(styleSheet.cssRules):null);
     this.criteriaList.push(styleSheet.cssRules ? new SelectorSizeCriteria(styleSheet.cssRules):null);
