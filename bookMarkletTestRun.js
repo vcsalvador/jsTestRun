@@ -17,16 +17,20 @@ var GroupingCriteria = function (ruleList){
 var NestingCriteria = function (ruleList) {
     this.rules = Array.from(ruleList).filter((element) => element.type == 1);
     this.weight = 2.8;
-    this.pattern = /(?!,)( )/g;
+    this.pattern = /(\w+ (>|~|\+)?)/g;
 
     this.resultList = this.rules.map((currentValue) =>
         new Result(currentValue, calculateRule(currentValue, this.weight, this.pattern)));
     
     function calculateRule(rule, weight, pattern){
-        if ((m = pattern.exec(rule.selectorText)) !== null)
-            return weight * (2/(1 + Math.pow(Math.E,(-(rule.selectorText.split('').length - 1)))) - 1);
-        else
-            return 0;
+        count = 0;
+        var m = pattern.exec(rule.selectorText);
+        for (match in m){
+            if (match.indexOf(",",">","~","+") < 0)
+                count++;
+        }
+        return count;
+        
     }
     
     this.total = this.resultList.reduce((previousValue,currentValue) => {
