@@ -17,19 +17,18 @@ var GroupingCriteria = function (ruleList){
 var NestingCriteria = function (ruleList) {
     this.rules = Array.from(ruleList).filter((element) => element.type == 1);
     this.weight = 2.8;
-    this.pattern = /(\w+ (>|~|\+)?)/g;
 
     this.resultList = this.rules.map((currentValue) =>
         new Result(currentValue, calculateRule(currentValue, this.weight, this.pattern)));
     
     function calculateRule(rule, weight, pattern){
-        count = 0;
-        var m = pattern.exec(rule.selectorText);
-        for (match in m){
-            if (match.indexOf(",",">","~","+") < 0)
+        var count = 0;
+        var m = rule.selectorText.split(' ');
+        for (var match in m){
+            if (match.indexOf(',','>','~','+') < 0)
                 count++;
         }
-        return count;
+        return  weight * (2/(1 + Math.pow(Math.E,(-(count)))) - 1);
         
     }
     
@@ -37,7 +36,7 @@ var NestingCriteria = function (ruleList) {
         return previousValue + currentValue.score}, 0);
 };
 
-RareSelectorsCriteria = function (ruleList){
+var RareSelectorsCriteria = function (ruleList){
 
     this.pattern = /(\[{1}.*=.*\]{1})|(>|~|\+)/g;
     this.rules = Array.from(ruleList).filter((element) => element.type == 1);
@@ -113,8 +112,8 @@ var PseudoElementsCriteria = function (ruleList) {
         return previousValue + currentValue.score}, 0);
 };
 
-varAtRulesCriteria = function (ruleList) {
-    this.rules = Array.from(ruleList).filter((element) => ''.contains.call([3,5,6,7,8,10,12,13], element.type));
+var AtRulesCriteria = function (ruleList) {
+    this.rules = Array.from(ruleList).filter((element) => [3,5,6,7,8,10,12,13].contains(element.type));
     this.weight = 2.8;
     this.pattern = /(?!@media)(@\w+)/g;
 
@@ -190,7 +189,23 @@ var NotSufixCriteria = function (ruleList) {
 };
 
 var SelectorComplexityCriteria = function (ruleList) {
-    // body...
+    
+    this.rules = Array.from(ruleList).filter((element) => element.type == 1);
+    this.weight = 2.8;
+    this.pattern = /(\s\+)(\s~)((\w|\[|\])?\s(\w|\[|\])?)/g;
+
+    this.resultList = this.rules.map((currentValue) =>
+        new Result(currentValue, calculateRule(currentValue, this.weight, this.pattern)));
+
+    function calculateRule(rule, weight, pattern){
+        if ((m = pattern.exec(rule.selectorText)) !== null)
+            return Math.pow(m.length, m.length*0.2) * weight;
+        else
+            return 0;
+    }
+    
+    this.total = this.resultList.reduce((previousValue,currentValue) => {
+        return previousValue + currentValue.score}, 0);
 };
 
 var LocationSelectorCriteria = function (ruleList) {
@@ -213,10 +228,6 @@ var LocationSelectorCriteria = function (ruleList) {
 };
 
 
-var StyleSheetLengthCriteria = function (ruleList) {
-    // body...
-};
-
 var Result = function(cssRule, score){
     this.cssRule = cssRule;
     this.score = score;
@@ -236,15 +247,17 @@ var myStyleSheet = function(styleSheet){
     this.criteriaList.push(styleSheet.cssRules ? new MediaQueriesCriteria(styleSheet.cssRules):null);
     this.criteriaList.push(styleSheet.cssRules ? new PrefixCriteria(styleSheet.cssRules):null);
     this.criteriaList.push(styleSheet.cssRules ? new NotSufixCriteria(styleSheet.cssRules):null);
+    this.criteriaList.push(styleSheet.cssRules ? new LocationSelectorCriteria(styleSheet.cssRules):null);
+    this.criteriaList.push(styleSheet.cssRules ? new SelectorComplexityCriteria(styleSheet.cssRules):null);
     
     this.finalScore = this.criteriaList.reduce((previousValue,currentValue) => {
         return previousValue + (currentValue ? currentValue.total: 0)}, 0);
 };
 
-() => {
+(() => {
     var arr = Array.from(document.styleSheets);
 
     var myStyleSheetList = arr.map((currentValue) => new myStyleSheet(currentValue));
 
     console.log(myStyleSheetList);
-}();
+})();
