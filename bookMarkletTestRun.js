@@ -1,3 +1,5 @@
+'use Strict'
+
 var GroupingCriteria = function (ruleList){
     this.rules = Array.from(ruleList).filter((element) => element.type == 1);
     this.weight = 2.8;
@@ -6,7 +8,7 @@ var GroupingCriteria = function (ruleList){
         new Result(currentValue, calculateRule(currentValue, this.weight)));
 
     function calculateRule(rule, weight){
-        return weight * (2/(1 + Math.pow(Math.E,(-(rule.selectorText.split(',').length - 1)))) - 1);
+        return weight * Math.atan((Math.PI/2)*(rule.selectorText.split(',').length - 1)/20);
     }
     
     this.total = this.resultList.reduce((previousValue,currentValue) => {
@@ -28,7 +30,7 @@ var NestingCriteria = function (ruleList) {
             if (match.indexOf(',','>','~','+') < 0)
                 count++;
         }
-        return  weight * (2/(1 + Math.pow(Math.E,(-(count)))) - 1);
+        return  weight * Math.atan((Math.PI/2)*count/20);
         
     }
     
@@ -46,8 +48,9 @@ var RareSelectorsCriteria = function (ruleList){
         new Result(currentValue, calculateRule(currentValue, this.weight, this.pattern)));
 
     function calculateRule(rule, weight, pattern){
-        if ((m = pattern.exec(rule.selectorText)) !== null)
-            return m.length * weight;
+        var m = pattern.exec(rule.selectorText)
+        if (m !== null)
+            return (m.length) * weight;
         else
             return 0;
     }
@@ -57,7 +60,7 @@ var RareSelectorsCriteria = function (ruleList){
 };
 
 var SimplifiedPropertiesCriteria = function (ruleList){
-    this.pattern = /(\w*:){1}(\w*,)+(;)/g;
+    this.pattern = /\w+:\s?(\w+\s?)+;/g;
     this.rules = Array.from(ruleList).filter((element) => element.type == 1);
     this.weight = 3.2;
 
@@ -65,7 +68,8 @@ var SimplifiedPropertiesCriteria = function (ruleList){
         new Result(currentValue, calculateRule(currentValue, this.weight, this.pattern)));
 
     function calculateRule(rule, weight, pattern){
-        if ((m = pattern.exec(rule.selectorText)) !== null)
+        var m = pattern.exec(rule.selectorText);
+        if (m !== null)
             return m.length * weight;
         else
             return 0;
@@ -83,7 +87,7 @@ var SelectorSizeCriteria = function (ruleList){
         new Result(currentValue, calculateRule(currentValue, this.weight)));
 
     function calculateRule(rule, weight) {
-        if (rule.selectorText.length > 20)
+        if (rule.selectorText.length > 35)
             return weight;
         else
             return 0;
@@ -102,7 +106,8 @@ var PseudoElementsCriteria = function (ruleList) {
         new Result(currentValue, calculateRule(currentValue, this.weight, this.pattern)));
 
     function calculateRule(rule, weight, pattern){
-        if ((m = pattern.exec(rule.selectorText)) !== null)
+        var m = pattern.exec(rule.selectorText);
+        if (m !== null)
             return m.length * weight;
         else
             return 0;
@@ -113,7 +118,7 @@ var PseudoElementsCriteria = function (ruleList) {
 };
 
 var AtRulesCriteria = function (ruleList) {
-    this.rules = Array.from(ruleList).filter((element) => [3,5,6,7,8,10,12,13].contains(element.type));
+    this.rules = Array.from(ruleList).filter((element) => [3,5,6,7,8,10,12,13].indexOf(element.type) > -1);
     this.weight = 2.8;
     this.pattern = /(?!@media)(@\w+)/g;
 
@@ -121,7 +126,8 @@ var AtRulesCriteria = function (ruleList) {
         new Result(currentValue, calculateRule(currentValue, this.weight, this.pattern)));
 
     function calculateRule(rule, weight, pattern){
-        if ((m = pattern.exec(rule.selectorText)) !== null)
+        var m = pattern.exec(rule.selectorText);
+        if (m !== null)
             return m.length * weight;
         else
             return 0;
@@ -140,7 +146,8 @@ var MediaQueriesCriteria = function (ruleList) {
       new Result(currentValue, calculateRule(currentValue, this.weight, this.pattern)));
 
     function calculateRule(rule, weight, pattern){
-        if ((m = pattern.exec(rule.selectorText)) !== null)
+        var m = pattern.exec(rule.selectorText);
+        if (m !== null)
             return m.length * weight;
         else
             return 0;
@@ -159,7 +166,8 @@ var PrefixCriteria = function (ruleList) {
         new Result(currentValue, calculateRule(currentValue, this.weight, this.pattern)));
 
     function calculateRule(rule, weight, pattern){
-        if ((m = pattern.exec(rule.selectorText)) !== null)
+        var m = pattern.exec(rule.selectorText);
+        if (m !== null)
             return m.length * weight;
         else
             return 0;
@@ -178,7 +186,8 @@ var NotSufixCriteria = function (ruleList) {
         new Result(currentValue, calculateRule(currentValue, this.weight, this.pattern)));
 
     function calculateRule(rule, weight, pattern){
-        if ((m = pattern.exec(rule.selectorText)) !== null)
+        var m = pattern.exec(rule.selectorText);
+        if (m !== null)
             return m.length * weight;
         else
             return 0;
@@ -192,14 +201,15 @@ var SelectorComplexityCriteria = function (ruleList) {
     
     this.rules = Array.from(ruleList).filter((element) => element.type == 1);
     this.weight = 2.8;
-    this.pattern = /(\s\+)(\s~)((\w|\[|\])?\s(\w|\[|\])?)/g;
+    this.pattern = /(\s\+)|(\s~)|((\w*\[[a-zA-Z0-9\^=]*\]))/g;
 
     this.resultList = this.rules.map((currentValue) =>
         new Result(currentValue, calculateRule(currentValue, this.weight, this.pattern)));
 
     function calculateRule(rule, weight, pattern){
-        if ((m = pattern.exec(rule.selectorText)) !== null)
-            return Math.pow(m.length, m.length*0.2) * weight;
+        var m = pattern.exec(rule.selectorText);
+        if (m !== null)
+            return Math.pow(weight, m.length);
         else
             return 0;
     }
@@ -211,13 +221,14 @@ var SelectorComplexityCriteria = function (ruleList) {
 var LocationSelectorCriteria = function (ruleList) {
     this.rules = Array.from(ruleList).filter((element) => element.type == 1);
     this.weight = 2.8;
-    this.pattern = /(?!:not)(?!:.*-child)(:\w+)/g;
+    this.pattern = /(\w:\w*(-\w*)*-child)/g;
 
     this.resultList = this.rules.map((currentValue) =>
         new Result(currentValue, calculateRule(currentValue, this.weight, this.pattern)));
 
     function calculateRule(rule, weight, pattern){
-        if ((m = pattern.exec(rule.selectorText)) !== null)
+        var m = pattern.exec(rule.selectorText);
+        if (m !== null)
             return m.length * weight;
         else
             return 0;
@@ -255,9 +266,14 @@ var myStyleSheet = function(styleSheet){
 };
 
 (() => {
+    
+    var script = document.createElement('script');
+    script.type = 'application/javascript;version=1.7';
+    
+    document.getElementsByTagName('head')[0].appendChild(script);
+    
     var arr = Array.from(document.styleSheets);
 
     var myStyleSheetList = arr.map((currentValue) => new myStyleSheet(currentValue));
-
     console.log(myStyleSheetList);
 })();
