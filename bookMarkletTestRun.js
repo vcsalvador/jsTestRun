@@ -8,7 +8,7 @@ var GroupingCriteria = function (ruleList){
         new Result(currentValue, calculateRule(currentValue, this.weight)));
 
     function calculateRule(rule, weight){
-        return weight * Math.atan((Math.PI/2)*(rule.selectorText.split(',').length - 1)/20);
+        return weight * Math.atan((rule.selectorText.split(',').length - 1)/20);
     }
     
     this.total = this.resultList.reduce((previousValue,currentValue) => {
@@ -26,11 +26,11 @@ var NestingCriteria = function (ruleList) {
     function calculateRule(rule, weight, pattern){
         var count = 0;
         var m = rule.selectorText.split(' ');
-        for (var match in m){
-            if (match.indexOf(',','>','~','+') < 0)
+        for (var i = 0; i < m.length - 1; i++){
+            if (m[i].indexOf(',','>','~','+') < 0)
                 count++;
         }
-        return  weight * Math.atan((Math.PI/2)*count/20);
+        return  weight * Math.atan(count/20);
         
     }
     
@@ -146,7 +146,7 @@ var MediaQueriesCriteria = function (ruleList) {
       new Result(currentValue, calculateRule(currentValue, this.weight, this.pattern)));
 
     function calculateRule(rule, weight, pattern){
-        var m = pattern.exec(rule.selectorText);
+        var m = pattern.exec(rule.cssText);
         if (m !== null)
             return m.length * weight;
         else
