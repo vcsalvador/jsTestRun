@@ -68,7 +68,7 @@ var SimplifiedPropertiesCriteria = function (ruleList){
         new Result(currentValue, calculateRule(currentValue, this.weight, this.pattern)));
 
     function calculateRule(rule, weight, pattern){
-        var m = pattern.exec(rule.selectorText);
+        var m = pattern.exec(rule.cssText);
         if (m !== null)
             return m.length * weight;
         else
@@ -100,7 +100,7 @@ var SelectorSizeCriteria = function (ruleList){
 var PseudoElementsCriteria = function (ruleList) {
     this.rules = Array.from(ruleList).filter((element) => element.type == 1);
     this.weight = 2.8;
-    this.pattern = /(?!:not)(?!:.*-child)(:\w+)/g;
+    this.pattern = /(?!:not)(?!:.*-child)(::\w+)/g;
 
     this.resultList = this.rules.map((currentValue) =>
         new Result(currentValue, calculateRule(currentValue, this.weight, this.pattern)));
@@ -146,7 +146,7 @@ var MediaQueriesCriteria = function (ruleList) {
       new Result(currentValue, calculateRule(currentValue, this.weight, this.pattern)));
 
     function calculateRule(rule, weight, pattern){
-        var m = pattern.exec(rule.cssText);
+        var m = pattern.exec(rule.selectorText);
         if (m !== null)
             return m.length * weight;
         else
