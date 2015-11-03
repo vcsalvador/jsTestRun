@@ -166,7 +166,7 @@ var PrefixCriteria = function (ruleList) {
         new Result(currentValue, calculateRule(currentValue, this.weight, this.pattern)));
 
     function calculateRule(rule, weight, pattern){
-        var m = pattern.exec(rule.selectorText);
+        var m = pattern.exec(rule.cssText);
         if (m !== null)
             return m.length * weight;
         else
