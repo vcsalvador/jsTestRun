@@ -39,7 +39,7 @@ gulp.task('docs-html', ['calculator'], () => {
 });
 
 gulp.task('docs-css', () => {
-  return gulp.src('docs/*.css')
+  return gulp.src(['docs/*', '!docs/index.html'])
     .pipe(gulp.dest(COMPILED_DESTINATION));
 });
 
