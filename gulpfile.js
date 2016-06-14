@@ -46,7 +46,7 @@ gulp.task('docs-css', () => {
 gulp.task('docs', ['docs-html', 'docs-css']);
 
 gulp.task('deploy', () => {
-  return gulp.src(COMPILED_DESTINATION)
+  return gulp.src(`${COMPILED_DESTINATION}**/*`)
     .pipe(ghPages());
 });
 
