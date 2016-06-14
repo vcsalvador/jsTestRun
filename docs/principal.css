@@ -1,0 +1,39 @@
+main {
+  /*min-width: 320px;
+  max-width: 480px;*/
+  margin: 0 auto;
+  text-align: center;
+}
+
+main h1 {
+  font-family: 'Baumans', sans-serif;
+  font-size: 2.8rem;
+  line-height: 85%;
+  margin-bottom: 0.35em;
+}
+
+main h2 {
+  font-family: 'Handlee', cursive;
+  font-size: 2.4rem;
+  margin-top: 0.35em;
+}
+
+.steps {
+  text-align: left;
+}
+
+.btn.btn-small {
+  zoom: 0.5;
+  padding-left: 23px;
+  padding-right: 23px;
+}
+
+p {
+  font-weight: 300;
+  font-size: 1.15rem;
+}
+
+.instructions {
+  max-width: 480px;
+  margin: 0.5em auto;
+}

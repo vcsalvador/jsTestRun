@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Métrica de Manutenibilidade de Código CSS</title>
+  <!-- framework materialize -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.6/css/materialize.min.css" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Handlee|Baumans" crossorigin>
+  <link rel="stylesheet" href="principal.css">
+  <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+  <link rel="icon" href="favicon.ico" type="image/x-icon">
+</head>
+<body>
+
+
+  <nav>
+    <div class="nav-wrapper green lighten-2">
+      <i class="small material-icons center">straighten</i>
+    </div>
+  </nav>
+
+  <main class="row">
+
+    <article class="col s12 m6">
+      <header>
+        <h1>Métrica de Manutenibilidade</h1>
+        <h2>de <span class="green-text text-darken-1">Código CSS</span></h2>
+      </header>
+
+      <p>Para calcular o valor da métrica para esta página, clique no botão a seguir.</p>
+      <p>Para cada folha de estilo, será mostrado (a) o valor total da métrica e
+        (b) o valor separado de cada critério que a compõe.</p>
+      <a class="waves-effect waves-light btn-large blue darken-4" href="javascript:%CALCULATOR%">
+        <i class="material-icons right">straighten</i>Calcular a Métrica
+      </a>
+    </article>
+
+    <div class="col s12 m6">
+      <div class="card instructions">
+        <div class="card-image waves-effect waves-block waves-light">
+          <!-- <img class="activator" src="howto.png" alt="Video mostrando como usar" height="321"> -->
+          <video class="activator" src="howto.mp4" alt="Video mostrando como usar" height="320" autoplay="true" loop="0"></video>
+        </div>
+        <div class="card-content">
+          <span class="card-title activator grey-text text-darken-4">
+            Criando um <em>bookmarklet</em>
+            <i class="material-icons right">more_vert</i>
+          </span>
+        </div>
+        <div class="card-reveal">
+          <span class="card-title grey-text text-darken-4">Criando um
+            <em>bookmarklet<i class="material-icons right">close</i>
+          </span>
+          <p>Para criar um <em>bookmarklet</em> e calcular a métrica para
+            qualquer página web, siga os passos:</p>
+          <ol class="steps">
+            <li><strong class="green-text text-darken-2">Ative a barra de favoritos</strong> do navegador</li>
+            <li><strong class="green-text text-darken-2">Arraste</strong> <a class="waves-effect waves-light btn btn-small blue darken-4" href="javascript:alert()">
+              <i class="material-icons right">straighten</i>Calcular a Métrica
+            </a> para a barra de favoritos</li>
+            <li>Em qualquer página, <strong class="green-text text-darken-2">clique no item</strong> favorito criado</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+
+  <!-- jquery para framework materialize -->
+  <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+  <!-- framework materialize -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.6/js/materialize.min.js"></script>
+</body>
+</html>
