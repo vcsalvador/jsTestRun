@@ -31,7 +31,7 @@ gulp.task('calculator', () => {
     .pipe(gulp.dest(COMPILED_DESTINATION))
 });
 
-gulp.task('docs-html', ['calculator'], () => {
+gulp.task('docs-html', ['calculator'], () => {''
   let calculatorSource = fs.readFileSync(`${COMPILED_DESTINATION}calculator.min.js`);
   return gulp.src('docs/index.html')
     .pipe(replace('%CALCULATOR%', calculatorSource))
@@ -45,7 +45,7 @@ gulp.task('docs-css', () => {
 
 gulp.task('docs', ['docs-html', 'docs-css']);
 
-gulp.task('deploy', () => {
+gulp.task('deploy', ['docs'], () => {
   return gulp.src(`${COMPILED_DESTINATION}**/*`)
     .pipe(ghPages());
 });
